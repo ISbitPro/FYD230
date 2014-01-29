@@ -10,8 +10,9 @@ git clone https://github.com/fuzzer89/FYD230.git
 ```
 
 ## Uppgifter
-### Ansvar
-Personen ansvarar för att skriva ett första utkast till programmet, båda hjälper förstås till att buggsöka och ger feedback på programmet.
+**Typ:** För betyg VG krävs alla G-uppgifter, 6 st VG-uppgifter och 2 projektuppgifter. Sista redovisningsdag 19/3-14.
+**Ansvar:** Personen ansvarar för att skriva ett första utkast till programmet, båda hjälper förstås till att buggsöka och ger feedback på programmet. Uppgifterna är tilldelade varannan person, underuppgifter tilldelas samma person.
+**Status:** *- / Skriven / Buggfix / Redovisad*
 
 Nummer        | Typ  | Ansv. | Status       | Kommentar
 ------------- | ---- | ----- | ------------ | ------------
