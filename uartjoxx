@@ -1,0 +1,106 @@
+
+//Program för att läsa in uart-text till en int, 
+//göra beräkningar med talet, 
+//och sen skriva tillbaka det nya talet
+
+
+char uart_rd;
+int a = 999;
+int b = 0;
+char txt[] = "00000";
+int i = 0;
+
+//Interrupt för att läsa in värden längre än 2 bokstäver.
+//int k = 0;
+char Rx_buff[32];
+char New_Flag = 0;
+char update = 0;
+char *Rx_buff_ptr;
+void interrupt(){
+     char i = 0;
+     unsigned timeOut = 0;
+     if (PIR1.RCIF) {
+         while (timeOut < 20000)
+         {
+              if (UART1_Data_Ready()){
+                 Rx_buff[i] = UART1_Read();
+                 i++;
+                 Rx_buff[i] = 0; // Add NULL
+                 timeOut = 0;    // reset timeout
+              }
+              timeOut++;
+         }
+         New_Flag = 1;
+     }
+}
+
+void main()
+{
+
+  TRISC=0x00;
+
+  
+
+  PORTC = 0xFF;
+  Delay_ms(100);
+  PORTC = 0x00;
+  Delay_ms(100);
+  PORTC = 0xFF;
+  PORTC = 0x00;
+  Delay_ms(100);
+
+  ANSELH=0;    //configure an pin as digital I/O
+  ANSEL=0;
+  C1ON_bit = 0;                      // Disable comparators
+  C2ON_bit = 0;
+  
+  //UART interrupt
+  INTCON.GIE = 1;
+  INTCON.PEIE = 1;
+  PIE1.RCIE=1;    //enable receive interrupt
+
+  UART1_Init(115200);               // Initialize UART module at 9600 bps
+  Delay_ms(100);                  // Wait for UART module to stabilize
+
+  UART1_Write_Text("Start");
+  UART1_Write(10);
+  UART1_Write(13);
+
+  while(1)
+  {                     // Endless loop
+
+    if(New_Flag)
+    {
+      New_Flag = 0;
+      update = 1;
+      //k = 0;
+      Rx_buff_ptr = &Rx_buff[0];
+
+      while(*Rx_buff_ptr)
+      {
+        UART1_Write(*Rx_buff_ptr);
+        Rx_buff_ptr++;
+      }
+    }
+
+    if(update)
+    {
+      update = 0;
+      //Behabdla nytt invärde här. (Rx_buff)
+      b = atoi(Rx_buff);
+    }
+
+    //b++;
+    b = b +1;
+    IntToStr(b, txt);
+    UART1_Write_Text(txt);
+    UART1_Write(10);
+    UART1_Write(13);
+    
+    //a++;
+    Delay_ms(1000);
+    
+    i = 0;
+
+  }
+}
